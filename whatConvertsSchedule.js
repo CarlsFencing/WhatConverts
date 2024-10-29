@@ -233,9 +233,6 @@ define(['N/https', 'N/log', 'N/encode', 'N/record', 'N/search'], function(https,
 
                 var leadType = l.type;
 
-                
-                
-
                 if(leadType === 'Web Form'){
 
                     var newRecord = record.create({
@@ -299,12 +296,6 @@ define(['N/https', 'N/log', 'N/encode', 'N/record', 'N/search'], function(https,
 
 
                     newRecord.save();
-
-                    
-                    
-
-                    
-                    
 
 
                 }
@@ -371,8 +362,6 @@ define(['N/https', 'N/log', 'N/encode', 'N/record', 'N/search'], function(https,
                     }
 
                     newRecord.save();
-
-                   
 
                 }
 
