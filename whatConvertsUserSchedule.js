@@ -7,8 +7,28 @@ define(['N/https', 'N/log', 'N/encode', 'N/record', 'N/search'], function(https,
     function execute(context) {
         try {
 
+            
+            var whatConverts = search.create({
+                type: 'customrecord_gc_what_converts_leads', 
+                
+                columns: [
+                    'internalid',  
+                    'custrecord_gc_wc_lead_contact_name',
+                    'custrecord_gc_wc_date',
+                    'custrecord_gc_wc_lead_type',
+                    'custrecord_gc_wc_email',
+                    'custrecord_gc_wc_lead_contact_number'
+                ]
+            });
+
+            var searchResults = whatConverts.run().getRange({
+                start: 0,
+                end: 1000  
+            });
+
             var webForm = [];
             var phoneCall = [];
+
             
             searchResults.forEach(function(result) {
                 var id = result.getValue('internalid');
@@ -33,7 +53,7 @@ define(['N/https', 'N/log', 'N/encode', 'N/record', 'N/search'], function(https,
                 var currentDateFormat = getCurrentDateMDY();
 
                 if(currentDateFormat === date){
-                    if(type === 'Web Form'){
+                    if(type === 'Web Form' && email !== ''){
                         webForm.push(
                             {
                                 id: id,
@@ -303,10 +323,6 @@ define(['N/https', 'N/log', 'N/encode', 'N/record', 'N/search'], function(https,
                     }
                 });
 
-                
-                
-                
-
             }
             mapPhoneCall();
 
@@ -317,6 +333,8 @@ define(['N/https', 'N/log', 'N/encode', 'N/record', 'N/search'], function(https,
                 title: 'API Error',
                 details: error.message + '\nStack: ' + error.stack
             });
+
+            log.debug('e', error)
         }
     }
 
