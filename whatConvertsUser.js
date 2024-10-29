@@ -10,8 +10,6 @@ define(['N/record', 'N/log', 'N/search'], function(record, log, search) {
             var internalid = newRecord.id;
             var recordType = newRecord.type;
 
-            
-
             var leadRecord = record.load({
                 type: "customrecord_gc_what_converts_leads",
                 id: internalid
@@ -22,41 +20,44 @@ define(['N/record', 'N/log', 'N/search'], function(record, log, search) {
 
             if(multipleRecrords && updateRecord){
 
-                var customerRecords = leadRecord.getValue({fieldId: 'custrecord_gc_wc_lead_customer_record'});
+                try{
 
-                customerRecords.forEach(function(c, x){
+                    var customerRecords = leadRecord.getValue({fieldId: 'custrecord_gc_wc_lead_customer_record'});
+                    customerRecords.forEach(function(c, x){
 
-                    var contactRecord = record.load({
-                        type: record.Type.CUSTOMER,
-                        id: c
+                        var contactRecord = record.load({
+                            type: record.Type.CUSTOMER,
+                            id: c
+                        });
+
+
+                        var existingRecord = contactRecord.getValue({fieldId: 'custentity_gc_what_converts_info'});
+                        var existingWebForms = existingRecord.concat(internalid)
+                        
+                        
+                        contactRecord.setValue({fieldId: 'custentity_gc_what_converts_info', value: existingWebForms});
+                        contactRecord.save({
+                            enableSourcing: false,
+                            ignoreMandatoryFields: true,
+                            synchronous: true
+                        });
+
+
                     });
 
+                    leadRecord.setValue({fieldId: 'custrecord_gc_email_dup', value: false});
+                    leadRecord.setValue({fieldId: 'custrecord_gc_lead_contact_rec_update', value: false});
+                    leadRecord.save();
 
                     
 
-                    var existingRecord = contactRecord.getValue({fieldId: 'custentity_gc_what_converts_info'});
-                    var existingWebForms = existingRecord.concat(web.id)
-                    
-                    
-                    contactRecord.setValue({fieldId: 'custentity_gc_what_converts_info', value: existingWebForms});
-                    contactRecord.save({
-                        enableSourcing: false,
-                        ignoreMandatoryFields: true,
-                        synchronous: true
-                    });
+                }catch(e){
+                    log.debug('e', e)
+                }
 
-
-                });
-
-                leadRecord.setValue({fieldId: 'custrecord_gc_email_dup', value: false});
-                leadRecord.setValue({fieldId: 'custrecord_gc_lead_contact_rec_updates', value: false});
-                leadRecord.save()
-
-                
             }
             
-         
-
+        
         }
 
     }
