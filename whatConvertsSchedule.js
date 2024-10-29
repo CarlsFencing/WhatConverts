@@ -246,16 +246,17 @@ define(['N/https', 'N/log', 'N/encode', 'N/record', 'N/search'], function(https,
                     //
 
                     var customer = l.customer;
-                    var firstName = customer['First Name*']
-                    var lastName = customer['Last Name*']
+                    var firstName = customer['First Name*'] || customer['First Name']
+                    var lastName = customer['Last Name*'] || customer['Last Name']
                     var fullName = firstName+' '+lastName
                     var email = customer['Email Address*'] || customer['E-mail']
-                    var phoneNumber = customer['Phone Number*']
-                    var zipCode = customer['Zipcode*']
+                    var phoneNumber = customer['Phone Number*'] || customer['Phone Number'] || customer['phone'] ||customer['Phone No*']
+                    var zipCode = customer['Zipcode*'] || customer['Zipcode']
                     var streetAddress = customer['Street Address*']
-                    var city = customer['City*']
+                    var city = customer['City*'] || customer['Street Address']
                     var descriptionOfWork = customer['Description of Work to be Completed'] || customer['What are you looking for?*'];
-                    var timeFrame = customer['Select Time Frame for Project*']
+                    var timeFrame = customer['Select Time Frame for Project*'] || customer['Select Time Frame for Project']
+                    var jobSelect = customer['projectselect']
                     //customerData.push(fullName, email, phoneNumber, zipCode, streetAddress, city)
                     customerData.push(customer)
                    
@@ -276,7 +277,7 @@ define(['N/https', 'N/log', 'N/encode', 'N/record', 'N/search'], function(https,
 
                     //WEB LEAD
                     newRecord.setValue({ fieldId: 'custrecord_gc_wc_desc_work', value:  descriptionOfWork });
-                    newRecord.setValue({ fieldId: 'custrecord_gc_wc_project_type', value:  l.job });
+                    newRecord.setValue({ fieldId: 'custrecord_gc_wc_project_type', value:  l.job || jobSelect });
                     newRecord.setValue({ fieldId: 'custrecord_gc_wc_time_frame', value:  timeFrame });
                     newRecord.setValue({ fieldId: 'custrecord_gc_wc_lead_reference', value:  l.ref });
 
@@ -298,6 +299,8 @@ define(['N/https', 'N/log', 'N/encode', 'N/record', 'N/search'], function(https,
 
 
                     newRecord.save();
+
+                    
                     
 
                     
